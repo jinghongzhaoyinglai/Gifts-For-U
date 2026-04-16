@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 每日之光 · 闪耀如你</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', '微软雅黑', sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        /* ===== 基础重置 ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    font-family:'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif;
+    background:#0a0a1a;
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+#app{position:relative;min-height:100vh}
+
+/* ===== 加载动画 ===== */
+.loader{
+    position:fixed;inset:0;z-index:9999;
+    background:linear-gradient(135deg,#1a0a2e,#2d1b4e,#1a0a2e);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transition:opacity 0.6s ease;
+}
+.loader-heart{
+    width:50px;height:50px;
+    background:linear-gradient(135deg,#ff6b9d,#c44569);
+    transform:rotate(-45deg);
+    animation:loaderPulse 1s ease-in-out infinite;
+    position:relative;
+}
+.loader-heart::before,.loader-heart::after{
+    content:'';position:absolute;width:50px;height:50px;border-radius:50%;
+    background:linear-gradient(135deg,#ff6b9d,#c44569);
+}
+.loader-heart::before{top:-25px;left:0}
+.loader-heart::after{left:25px;top:0}
+@keyframes loaderPulse{
+    0%,100%{transform:rotate(-45deg) scale(1)}
+    50%{transform:rotate(-45deg) scale(1.15)}
+}
+.loader p{margin-top:30px;color:#ff9ab5;font-size:0.95rem;letter-spacing:2px;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ===== 主视图 ===== */
+.main-view{
+    position:relative;min-height:100vh;
+    padding:0 20px 40px;max-width:900px;margin:0 auto;
+}
+.bg-layer{
+    position:fixed;inset:0;z-index:0;
+    transition:background 1s ease;
+    background-size:400% 400%;
+    animation:bgShift 15s ease infinite;
+}
+@keyframes bgShift{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+.bg-overlay{
+    position:fixed;inset:0;z-index:1;
+    background:rgba(0,0,0,0.25);
+    backdrop-filter:blur(2px);
+}
+@keyframes mainFadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+/* ===== 顶栏 ===== */
+.top-bar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:25px 0 10px;
+}
+.nav-btn{
+    width:48px;height:48px;border-radius:50%;
+    border:2px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.1);
+    color:#fff;font-size:1.5rem;cursor:pointer;
+    transition:all 0.3s;
+    display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(10px);
+}
+.nav-btn:hover{background:rgba(255,255,255,0.25);transform:scale(1.1)}
+.nav-btn:active{transform:scale(0.95)}
+
+.month-title-area{text-align:center;flex:1}
+.month-title{
+    font-size:2.2rem;font-weight:700;
+    background:linear-gradient(135deg,#fff,#ffd6e0,#fff);
+    background-size:200% auto;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{
+    0%{background-position:0% center}
+    100%{background-position:200% center}
+}
+.year-selector{
+    display:flex;align-items:center;justify-content:center;
+    gap:10px;margin-top:4px;
+}
+.year-arrow{
+    background:none;border:none;color:rgba(255,255,255,0.6);
+    cursor:pointer;font-size:0.75rem;padding:4px 8px;transition:color 0.3s;
+}
+.year-arrow:hover{color:#fff}
+.year-display{
+    font-size:1rem;color:rgba(255,255,255,0.8);
+    cursor:pointer;padding:4px 12px;
+    border-radius:20px;border:1px solid rgba(255,255,255,0.2);
+    transition:all 0.3s;letter-spacing:2px;
+}
+.year-display:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.5)}
+
+/* ===== 每日横幅 ===== */
+.daily-banner{
+    position:relative;z-index:2;
+    margin:15px 0 20px;padding:22px 25px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    backdrop-filter:blur(20px);
+    cursor:pointer;transition:all 0.3s;overflow:hidden;
+}
+.daily-banner::before{
+    content:'';position:absolute;top:-50%;right:-50%;
+    width:200%;height:200%;
+    background:conic-gradient(from 0deg,transparent,rgba(255,107,157,0.1),transparent,rgba(167,139,250,0.1),transparent);
+    animation:rotateBg 8s linear infinite;
+}
+@keyframes rotateBg{to{transform:rotate(360deg)}}
+.daily-banner:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px)}
+.banner-inner{position:relative;z-index:1;text-align:center}
+.banner-date{display:block;font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:8px;letter-spacing:3px}
+.banner-quote{
+    font-size:1.15rem;font-style:italic;letter-spacing:1px;line-height:1.8;
+    background:linear-gradient(90deg,#ffd6e0,#fff,#c4b5fd,#fff,#ffd6e0);
+    background-size:300% auto;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;animation:shimmer 5s linear infinite;
+}
+.banner-hint{display:block;font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:10px;letter-spacing:2px}
+
+/* ===== 星期行 ===== */
+.weekday-row{
+    position:relative;z-index:2;
+    display:grid;grid-template-columns:repeat(7,1fr);
+    text-align:center;margin-bottom:10px;
+}
+.wk{font-size:0.8rem;color:rgba(255,255,255,0.5);padding:8px 0;letter-spacing:2px;font-weight:300}
+.wk.sun{color:#ff9a9e}
+.wk.sat{color:#90cdf4}
+
+/* ===== 日历格子 ===== */
+.calendar-grid{
+    position:relative;z-index:2;
+    display:grid;grid-template-columns:repeat(7,1fr);gap:8px;
+}
+.cal-cell{
+    aspect-ratio:1;border-radius:16px;position:relative;overflow:hidden;cursor:pointer;
+    transition:all 0.35s cubic-bezier(.4,0,.2,1);
+    animation:cellAppear 0.5s ease both;
+    border:1px solid rgba(255,255,255,0.08);
+}
+.cal-cell.empty{cursor:default;border:none;background:none;animation:none}
+.cal-cell:not(.empty):hover{
+    transform:translateY(-4px) scale(1.03);
+    box-shadow:0 8px 25px rgba(0,0,0,0.3);
+    border-color:rgba(255,255,255,0.3);z-index:3;
+}
+.cal-cell:not(.empty):active{transform:scale(0.97)}
+@keyframes cellAppear{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+
+.cell-thumb{
+    position:absolute;inset:0;
+    background-size:cover;background-position:center;
+    transition:transform 0.5s ease;
+}
+.cal-cell:hover .cell-thumb{transform:scale(1.1)}
+
+.cell-overlay{
+    position:absolute;inset:0;
+    transition:opacity 0.3s;
+    pointer-events:none;
+}
+.cal-cell:hover .cell-overlay{opacity:0.5}
+
+.cell-day{
+    position:absolute;top:6px;left:8px;
+    font-size:0.85rem;font-weight:700;
+    color:rgba(255,255,255,0.95);
+    text-shadow:0 1px 6px rgba(0,0,0,0.6),0 0 12px rgba(0,0,0,0.4);
+    z-index:1;
+}
+.cell-dots{position:absolute;bottom:6px;right:8px;font-size:0.55rem;z-index:1;text-shadow:0 0 8px currentColor}
+
+.cal-cell.today{border:2px solid rgba(255,107,157,0.8);box-shadow:0 0 20px rgba(255,107,157,0.3)}
+.cal-cell.today::after{
+    content:'今';position:absolute;bottom:5px;left:8px;
+    font-size:0.6rem;color:#fff;
+    background:linear-gradient(135deg,#ff6b9d,#ee5a7f);
+    padding:1px 5px;border-radius:8px;z-index:1;
+}
+
+/* ===== 每日详情页 ===== */
+.day-view{
+    position:fixed;inset:0;z-index:100;
+    display:none;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:30px;opacity:0;transition:opacity 0.4s ease;
+    background:#0a0a1a;
+}
+.day-view.show{opacity:1}
+
+.day-bg-photo{
+    position:absolute;inset:0;
+    background-size:cover;background-position:center;
+    transition:opacity 0.8s ease;
+    opacity:0;
+}
+.day-bg-photo.loaded{opacity:1}
+
+.day-bg-overlay{
+    position:absolute;inset:0;
+    transition:background 0.5s;
+}
+
+.day-back{
+    position:absolute;top:20px;right:25px;z-index:10;
+    width:44px;height:44px;border-radius:50%;
+    border:2px solid rgba(255,255,255,0.3);
+    background:rgba(0,0,0,0.35);
+    color:#fff;font-size:1.1rem;cursor:pointer;
+    transition:all 0.3s;backdrop-filter:blur(10px);
+}
+.day-back:hover{background:rgba(255,255,255,0.15);transform:rotate(90deg) scale(1.1)}
+
+.day-content{
+    position:relative;z-index:5;
+    text-align:center;max-width:700px;
+    animation:dayContentIn 0.6s ease both;
+    padding:45px 35px;
+    background:rgba(0,0,0,0.3);
+    border-radius:24px;
+    backdrop-filter:blur(20px) saturate(1.5);
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+@keyframes dayContentIn{
+    from{opacity:0;transform:translateY(30px) scale(0.95)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.day-date-area{
+    display:flex;align-items:baseline;justify-content:center;
+    gap:12px;flex-wrap:wrap;margin-bottom:10px;
+}
+.day-day{
+    font-size:6rem;font-weight:800;line-height:1;
+    background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,255,255,0.7));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+.day-month-year{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.day-month{font-size:1.3rem;color:rgba(255,255,255,0.9);letter-spacing:3px;text-shadow:0 1px 6px rgba(0,0,0,0.5)}
+.day-year{font-size:0.9rem;color:rgba(255,255,255,0.6);letter-spacing:4px;text-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.day-weekday{display:block;font-size:1rem;color:rgba(255,255,255,0.7);letter-spacing:5px;margin-top:4px;text-shadow:0 1px 4px rgba(0,0,0,0.3)}
+
+.day-divider{width:80px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent);margin:20px auto}
+
+/* ===== 艺术字格言 ===== */
+.day-affirmation{
+    font-size:2rem;font-weight:700;line-height:1.6;letter-spacing:3px;
+    padding:30px 20px;position:relative;
+    text-shadow:0 0 12px rgba(255,255,255,0.4),0 0 24px rgba(255,255,255,0.2),0 0 48px rgba(255,180,200,0.15),0 2px 6px rgba(0,0,0,0.5);
+    background:linear-gradient(135deg,#fff 0%,#ffd6e0 20%,#e9d8fd 40%,#bee3f8 60%,#c6f6d5 80%,#fff 100%);
+    background-size:300% 300%;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:affirmationShimmer 6s ease infinite,affirmationFloat 4s ease-in-out infinite;
+    filter:drop-shadow(0 2px 12px rgba(0,0,0,0.4));
+}
+.day-affirmation::before{content:'✦  ';font-size:0.6em;-webkit-text-fill-color:rgba(255,200,220,0.8)}
+.day-affirmation::after{content:'  ✦';font-size:0.6em;-webkit-text-fill-color:rgba(255,200,220,0.8)}
+@keyframes affirmationShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes affirmationFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.day-nav-arrows{position:relative;z-index:5;display:flex;gap:60px;margin-top:30px}
+.day-nav-btn{
+    padding:10px 28px;border-radius:30px;
+    border:1.5px solid rgba(255,255,255,0.25);
+    background:rgba(0,0,0,0.4);
+    color:rgba(255,255,255,0.7);font-size:0.9rem;cursor:pointer;
+    transition:all 0.3s;backdrop-filter:blur(10px);
+}
+.day-nav-btn:hover{background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.5)}
+
+/* ===== 年份选择器 ===== */
+.year-picker{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
+    display:none;align-items:center;justify-content:center;
+    animation:fadeIn 0.3s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.year-picker-inner{
+    background:rgba(30,20,50,0.95);border:1px solid rgba(255,255,255,0.1);
+    border-radius:24px;padding:30px;
+    max-width:500px;width:90%;max-height:80vh;overflow-y:auto;text-align:center;
+}
+.year-picker-inner h3{font-size:1.3rem;color:#ffd6e0;margin-bottom:20px;letter-spacing:3px}
+.year-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.year-btn{
+    padding:10px;font-size:0.85rem;border-radius:12px;
+    border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);
+    color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.3s;
+}
+.year-btn:hover{background:rgba(255,107,157,0.2);color:#fff}
+.year-btn.active{background:linear-gradient(135deg,#ff6b9d,#c44569);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(255,107,157,0.4)}
+.year-picker-close{
+    margin-top:20px;padding:10px 30px;border-radius:20px;
+    border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);
+    color:#fff;cursor:pointer;transition:all 0.3s;
+}
+.year-picker-close:hover{background:rgba(255,255,255,0.15)}
+
+/* ===== 底部装饰 ===== */
+.bottom-deco{position:relative;z-index:2;text-align:center;padding:30px 0 10px}
+.deco-flower{display:inline-block;font-size:1.5rem;margin:0 15px;opacity:0.2;animation:decoFloat 4s ease-in-out infinite}
+.deco-flower:nth-child(2){animation-delay:1s}
+.deco-flower:nth-child(3){animation-delay:2s}
+@keyframes decoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(15deg)}}
+
+/* ===== 滚动条 ===== */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,107,157,0.3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,107,157,0.5)}
+
+/* ===== 响应式 ===== */
+@media(max-width:600px){
+    .month-title{font-size:1.6rem}
+    .calendar-grid{gap:5px}
+    .cal-cell{border-radius:12px}
+    .cell-day{font-size:0.7rem;top:4px;left:5px}
+    .cell-dots{font-size:0.4rem;bottom:4px;right:5px}
+    .daily-banner{padding:16px;margin:10px 0 15px}
+    .banner-quote{font-size:0.95rem}
+    .day-day{font-size:4rem}
+    .day-affirmation{font-size:1.35rem;padding:20px 10px;letter-spacing:1px}
+    .day-nav-arrows{gap:20px}
+    .day-nav-btn{padding:8px 18px;font-size:0.8rem}
+    .year-grid{grid-template-columns:repeat(4,1fr)}
+    .day-content{padding:25px 15px}
+}
+@media(max-width:380px){
+    .day-affirmation{font-size:1.1rem}
+    .day-day{font-size:3rem}
+    .nav-btn{width:38px;height:38px;font-size:1.2rem}
+}
+    </style>
+</head>
+<body>
+    <div id="app">
+    <div id="loader" class="loader">
+        <div class="loader-heart"></div>
+        <p>正在为你绽放今日光彩...</p>
+    </div>
+
+    <div id="mainView" class="main-view" style="display:none">
+        <div id="bgLayer" class="bg-layer"></div>
+        <div class="bg-overlay"></div>
+
+        <header class="top-bar">
+            <button class="nav-btn" onclick="prevMonth()">‹</button>
+            <div class="month-title-area">
+                <h1 id="monthTitle" class="month-title"></h1>
+                <div class="year-selector">
+                    <button class="year-arrow" onclick="changeYear(-1)">◀</button>
+                    <span id="yearDisplay" class="year-display" onclick="showYearPicker()"></span>
+                    <button class="year-arrow" onclick="changeYear(1)">▶</button>
+                </div>
+            </div>
+            <button class="nav-btn" onclick="nextMonth()">›</button>
+        </header>
+
+        <div id="dailyBanner" class="daily-banner" onclick="goToToday()">
+            <div class="banner-inner">
+                <span class="banner-date" id="bannerDate"></span>
+                <div class="banner-quote" id="bannerQuote"></div>
+                <span class="banner-hint">✨ 点击回到今天 ✨</span>
+            </div>
+        </div>
+
+        <div class="weekday-row">
+            <span class="wk sun">日</span><span class="wk">一</span><span class="wk">二</span>
+            <span class="wk">三</span><span class="wk">四</span><span class="wk">五</span><span class="wk sat">六</span>
+        </div>
+
+        <div id="calendarGrid" class="calendar-grid"></div>
+
+        <div class="bottom-deco">
+            <span class="deco-flower">✿</span>
+            <span class="deco-flower">❀</span>
+            <span class="deco-flower">✿</span>
+        </div>
+    </div>
+
+    <div id="dayView" class="day-view" style="display:none">
+        <div id="dayBgPhoto" class="day-bg-photo"></div>
+        <div id="dayBgOverlay" class="day-bg-overlay"></div>
+        <button class="day-back" onclick="closeDayView()">✕</button>
+        <div class="day-content">
+            <div class="day-date-area">
+                <span class="day-day" id="dayDay"></span>
+                <div class="day-month-year">
+                    <span class="day-month" id="dayMonth"></span>
+                    <span class="day-year" id="dayYear"></span>
+                </div>
+                <span class="day-weekday" id="dayWeekday"></span>
+            </div>
+            <div class="day-divider"></div>
+            <div class="day-affirmation" id="dayAffirmation"></div>
+        </div>
+        <div class="day-nav-arrows">
+            <button class="day-nav-btn" onclick="prevDay()">‹ 前一天</button>
+            <button class="day-nav-btn" onclick="nextDay()">后一天 ›</button>
+        </div>
+    </div>
+
+    <div id="yearPicker" class="year-picker" style="display:none">
+        <div class="year-picker-inner">
+            <h3>选择年份</h3>
+            <div id="yearGrid" class="year-grid"></div>
+            <button class="year-picker-close" onclick="closeYearPicker()">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const YEAR_MIN=2020,YEAR_MAX=2120;
+function seedRandom(s){return function(){s=(s*9301+49297)%233280;return s/233280}}
+function dateSeed(y,m,d){return y*10000+m*100+d}
+
+const affirmations=["你是这世间最不可替代的璀璨","你的存在本身就是一种奇迹","你比想象中更加强大","你的光芒无人可以遮挡","你值得世间所有美好","你正在成为最好的自己","你的温柔是最有力量的武器","你拥有照亮黑暗的勇气","你是自己人生的主角","你的每一步都在创造未来","你的灵魂闪耀着独特的光","你拥有改变世界的力量","你是夜空中最亮的星","你的坚持终将绽放成花","你本身就是一个奇迹","你的笑容能温暖整个宇宙","你值得被这个世界温柔以待","你已经足够好了","你的潜力是无限的","你是造物主最得意的作品","你的内在力量超乎想象","你散发着自己独特的光芒","你是生活中最美的惊喜","你的勇气比恐惧更强大","你正在走向更好的每一天","你本身就是答案","你的坚韧是最美的勋章","你是时间雕琢出的杰作","你的善良正在改变世界","你是独一无二的存在","你的梦想值得全力以赴","你比任何困难都更加强大","你的内心藏着整片星空","你是时光赠予世界的礼物","你的能量超乎你的想象","你是最好的自己无需比较","你的温柔是最大的力量","你的声音值得被听见","你是自己最好的守护者","你的勇敢让世界更美好","你的微笑是最好的通行证","你是破茧成蝶的勇者","你的智慧如星辰般闪耀","你是自己故事里的英雄","你值得拥有所有掌声","你的真实是最动人的美丽","你的每寸光阴都有意义","你是无限可能的起点","你的热忱能融化一切","你是夜雨中最暖的灯","你的心跳是最美旋律","你是晨曦里第一缕光","你的自由如风般纯粹","你是大海赠沙滩的诗","你的执着将开满鲜花","你是落日里最后的暖","你的纯粹是最美的诗","你是山川间的回响","你的善良如月光温柔","你是四季赠予的礼物","你的真诚打动每颗心","你是天空中的彩虹桥","你的坚韧让奇迹发生","你是春日里第一朵花","你的热情能燃烧宇宙","你是岁月写下的情书","你的灵魂如钻石闪耀","你是风雨后的那道虹","你的付出终将盛开","你是清晨最甜的露珠","你是世界画中最亮的色","你是命运最温柔章节","你是烈火中最美凤凰","你是深夜里最美星光","你是时光酿造的蜜","你是星辰大海的梦","你是大地最深情的歌","你是风中最美的旗","你是阳光下最暖的风","你是冰雪中盛开的梅","你是荒漠里涌出的泉","你是夜空里最亮的月","你是浪花中最勇敢的船","你是林间最清脆的鸟鸣","你是晨雾中最美的影","你是彩虹尽头最暖的色","你是雪地里最亮的星","你是暖阳下最柔的风","你是银河系最闪的星","你是花海里最香的那朵","你是秋叶中最美的红","你是人群中一眼的白","你是岁月里最甜的糖","你是暴风雨后的彩虹","你是宇宙赠与的奇迹","你是梦中最清晰的影","你是清晨里最暖的话语","你是诗里最动人的句","你是旅途上最美的景","你是心底最深的暖","你是画里最亮的光","你是天边最美的霞","你是书里最感人的章","你是歌里最动听的旋律","你是记忆里最美的时光","你是阳光下最好的自己","你是雨后最清新的风","你是黑夜里最温暖的火","你是春天里最温柔的雨","你是秋天里最丰收的果","你是夏天里最清凉的风","你是冬天里最温暖的阳","你是远方最值得的奔赴","你是归途中最亮的灯","你是迷茫时最真的方向","你是疲惫后最甜的梦","你是泪水后最美的笑","你是跌倒后最酷的站起","你是孤独时最好的陪伴","你是挫折后最强的复原","你是失败后最勇的重来","你是沉默中最深的思考","你是喧嚣中最静的力量","你是平凡中最真的伟大","你是简单中最纯的美好","你是复杂中最清的智慧","你是暗夜中最坚定的光","你是寒冬中最温暖的火","你是洪流中最稳的锚","你是飞鸟中最自由的翼","你是树林中最高的那棵","你是草原上最野的花","你是河流中最清澈的泉","你是山峦中最雄伟的峰","你是云层中最洁白的朵","你是星空下最浪漫的梦","你是日出处最壮丽的景","你是潮汐中最有力量的浪","你是季节中最温柔的转","你是时间里最珍贵的刻","你是旅程中最美丽的遇","你是故事中最动人的角","你是乐章中最激昂的音","你是画卷中最斑斓的彩","你是诗歌中最深情的字","你是星辰中最耀眼的那颗","你是花园中最馥郁的芳","你是天际中最辽阔的蓝","你是大地中最肥沃的土","你是生命中最重要的你","你是独一无二的你","你是无可替代的你","你是最好的你","你是最耀眼的光","你是最坚韧的树","你是最纯净的水","你是最热烈的火","你是最自由的风","你是最温暖的家","你是最美的存在","你的每一次呼吸都在书写奇迹","你值得这世间最深情的拥抱","你的生命比星辰更加璀璨","你的坚持让不可能变为可能","你的笑容是最治愈的良药","你的善良让世界更值得期待","你的勇气是破晓前的光","你的真诚是最动人的篇章","你的温柔是世间最好的解药","你的梦想值得被全世界看见","你的脚步正在丈量最美的远方","你的故事终将成为传奇","你的灵魂比钻石更加闪耀","你的存在让世界更加完整","你的内心有一座不可征服的山","你的真诚让人间多了暖意","你的独特是最珍贵的礼物","你的今天比昨天更加闪耀","你的明天值得所有期待","你的此刻就是最好的时光","你的努力正在悄悄开花","你的真诚是最强大的武器","你的热爱足以点燃整片天空","你的善良正在悄悄改变世界","你的勇敢是自己的最高勋章","你的可能性比宇宙更辽阔","你走过的每一步都算数","你的心之所向便是光的方向","你永远值得最好的际遇","你的内在有一个无所不能的自己","你是自己命运最好的掌舵者","你正在书写属于自己的传奇","你的微笑能点亮整片夜空","你的温柔可以治愈一切伤痕","你的执着必将迎来花开时节","你是这世界需要的温暖","你的灵魂自有万丈光芒","你的善良终会回到你身边","你的坚强超乎所有人的想象","你是宇宙花了百亿年打造的杰作","你的每一面都值得被爱","你的不完美恰恰是最美的印记","你的眼泪终会浇灌出玫瑰","你的声音值得被全世界倾听","你的存在让某个人的世界完整","你正在成为自己最想成为的人","你是被这个世界深深爱着的","你的脆弱也是一种了不起的勇敢","你的平凡里藏着最不平凡的光","你是这个时代最温柔的注脚","你的每个清晨都是新的起点","你值得一场盛大的自我庆祝","你是造物主写下的最长情的诗","你的心跳是这个世界的节奏","你是被星辰亲吻过的灵魂","你终将成为传说中最美的篇章","你的笑容是人间最甜的糖","你是时光长河中最闪耀的涟漪","你的每寸肌肤都写着宇宙的密码","你是大自然最精妙的杰作","你的存在就是最好的证明","你的光热无需任何人认证","你的名字是世间最动听的音节","你的眼眸住着整片星河","你的一生注定不凡","你的温柔如水能穿石","你是这颗星球上最独特的风景","你的生命轨迹就是最美的画","你是所有美好事物向你奔赴的理由","你的每一次选择都在创造历史","你是那道别人仰望的光","你的心比海更辽阔比天更高远","你是自己命运中永不熄灭的火种","你的呼吸间藏着万千星辰","你比昨日更强大比明日更自由","你的善良是这荒原上唯一的绿洲","你是万花筒中最绚烂的那个碎片","你的影子都能给别人温暖","你是黑暗中永不陨落的星","你身上有让冰雪融化的魔力","你是世间一切柔软与坚定的合体","你的存在本身就是一首诗","你是时光藏在岁月里最好的礼物","你的双手能触及星辰的高度","你是那束穿透乌云的阳光","你的每个细胞都在闪闪发光","你是人间值得的意义本身","你是漫长岁月里最温柔的奇迹","你的思维比星系更浩瀚","你是那颗在黑暗中也不熄灭的星","你的笑容能让时光倒流","你是被春天偏爱的花朵","你是宇宙投给世界最美好的一票","你的泪水比钻石更加珍贵","你是所有浪漫故事的主角","你的气场比银河更加壮丽","你是自己最好的礼物和奖赏","你的内心比大海更加深沉","你是这人间最温柔的守候","你值得被这世界深深爱着"];
+
+const themes=[
+{bg:"linear-gradient(135deg,#667eea,#764ba2)",accent:"#c471ed",overlay:"rgba(102,126,234,0.35)"},
+{bg:"linear-gradient(135deg,#f093fb,#f5576c)",accent:"#ff9a9e",overlay:"rgba(245,87,108,0.3)"},
+{bg:"linear-gradient(135deg,#4facfe,#00f2fe)",accent:"#43e97b",overlay:"rgba(79,172,254,0.3)"},
+{bg:"linear-gradient(135deg,#43e97b,#38f9d7)",accent:"#0cebeb",overlay:"rgba(67,233,123,0.3)"},
+{bg:"linear-gradient(135deg,#fa709a,#fee140)",accent:"#fee140",overlay:"rgba(250,112,154,0.3)"},
+{bg:"linear-gradient(135deg,#a18cd1,#fbc2eb)",accent:"#d6bcfa",overlay:"rgba(161,140,209,0.3)"},
+{bg:"linear-gradient(135deg,#fccb90,#d57eeb)",accent:"#e9d8fd",overlay:"rgba(213,126,235,0.3)"},
+{bg:"linear-gradient(135deg,#e0c3fc,#8ec5fc)",accent:"#bee3f8",overlay:"rgba(142,197,252,0.3)"},
+{bg:"linear-gradient(135deg,#667eea,#f093fb)",accent:"#d6bcfa",overlay:"rgba(240,147,251,0.3)"},
+{bg:"linear-gradient(135deg,#fdcbf1,#e6dee9)",accent:"#fbb6ce",overlay:"rgba(253,203,241,0.35)"},
+{bg:"linear-gradient(135deg,#a1c4fd,#c2e9fb)",accent:"#90cdf4",overlay:"rgba(162,196,253,0.35)"},
+{bg:"linear-gradient(135deg,#d4fc79,#96e6a1)",accent:"#68d391",overlay:"rgba(150,230,161,0.35)"},
+{bg:"linear-gradient(135deg,#84fab0,#8fd3f4)",accent:"#81e6d9",overlay:"rgba(141,211,244,0.35)"},
+{bg:"linear-gradient(135deg,#a6c0fe,#f68084)",accent:"#feb2b2",overlay:"rgba(246,128,132,0.3)"},
+{bg:"linear-gradient(135deg,#fbc2eb,#a6c1ee)",accent:"#c4b5fd",overlay:"rgba(166,193,238,0.32)"},
+{bg:"linear-gradient(135deg,#fddb92,#d1fdff)",accent:"#fefcbf",overlay:"rgba(209,253,255,0.35)"},
+{bg:"linear-gradient(135deg,#ff9a9e,#fecfef)",accent:"#fbb6ce",overlay:"rgba(254,207,239,0.35)"},
+{bg:"linear-gradient(135deg,#f6d365,#fda085)",accent:"#fbd38d",overlay:"rgba(253,160,133,0.3)"},
+{bg:"linear-gradient(135deg,#89f7fe,#66a6ff)",accent:"#63b3ed",overlay:"rgba(102,166,255,0.3)"},
+{bg:"linear-gradient(135deg,#ffecd2,#fcb69f)",accent:"#fbb6a0",overlay:"rgba(252,182,159,0.33)"},
+{bg:"linear-gradient(135deg,#ff9a9e,#fad0c4)",accent:"#fbb6ce",overlay:"rgba(250,208,196,0.33)"},
+{bg:"linear-gradient(135deg,#a1c4fd,#c2e9fb)",accent:"#93c5fd",overlay:"rgba(194,233,251,0.33)"},
+{bg:"linear-gradient(135deg,#4facfe,#00f2fe)",accent:"#22d3ee",overlay:"rgba(0,242,254,0.3)"},
+{bg:"linear-gradient(135deg,#f093fb,#f5576c)",accent:"#f472b6",overlay:"rgba(245,87,108,0.31)"},
+{bg:"linear-gradient(135deg,#43e97b,#38f9d7)",accent:"#34d399",overlay:"rgba(56,249,215,0.32)"},
+{bg:"linear-gradient(135deg,#fa709a,#fee140)",accent:"#fbbf24",overlay:"rgba(254,225,64,0.3)"}
+];
+
+const weekdays=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+const monthNames=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+
+function getPhotoUrl(seed,w,h){return `https://picsum.photos/seed/${seed}/${w}/${h}`}
+
+function getDayData(y,m,d){
+    const seed=dateSeed(y,m,d);
+    const rng=seedRandom(seed);
+    const themeIdx=Math.floor(rng()*themes.length);
+    const quoteIdx=Math.floor(rng()*affirmations.length);
+    return{
+        theme:themes[themeIdx],
+        quote:affirmations[quoteIdx],
+        photoUrl:getPhotoUrl(seed,1200,800),
+        thumbUrl:getPhotoUrl(seed,200,200)
+    };
+}
+
+let currentYear=new Date().getFullYear();
+let currentMonth=new Date().getMonth()+1;
+let selectedDay=null;
+
+function preloadImage(url,cb){
+    const img=new Image();
+    img.onload=()=>cb&&cb(true);
+    img.onerror=()=>cb&&cb(false);
+    img.src=url;
+}
+
+function renderCalendar(){
+    const grid=document.getElementById('calendarGrid');
+    grid.innerHTML='';
+    document.getElementById('monthTitle').textContent=monthNames[currentMonth-1];
+    document.getElementById('yearDisplay').textContent=currentYear;
+    const today=new Date();
+    const todayData=getDayData(today.getFullYear(),today.getMonth()+1,today.getDate());
+    document.getElementById('bannerQuote').textContent=`"${todayData.quote}"`;
+    document.getElementById('bannerDate').textContent=`${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日 · 今日之光`;
+    const firstDay=new Date(currentYear,currentMonth-1,1).getDay();
+    const daysInMonth=new Date(currentYear,currentMonth,0).getDate();
+    for(let i=0;i<firstDay;i++){
+        const empty=document.createElement('div');
+        empty.className='cal-cell empty';
+        grid.appendChild(empty);
+    }
+    for(let d=1;d<=daysInMonth;d++){
+        const data=getDayData(currentYear,currentMonth,d);
+        const cell=document.createElement('div');
+        cell.className='cal-cell';
+        const isToday=(currentYear===today.getFullYear()&&currentMonth===today.getMonth()+1&&d===today.getDate());
+        if(isToday)cell.classList.add('today');
+        cell.style.animationDelay=`${d*0.02}s`;
+        cell.innerHTML=`
+            <div class="cell-thumb" style="background-image:url('${data.thumbUrl}')"></div>
+            <div class="cell-overlay" style="background:${data.theme.overlay}"></div>
+            <span class="cell-day">${d}</span>
+            <span class="cell-dots" style="color:${data.theme.accent}">✦</span>
+        `;
+        cell.onclick=()=>openDayView(d);
+        grid.appendChild(cell);
+    }
+    const monthSeed=seedRandom(currentYear*100+currentMonth);
+    const monthThemeIdx=Math.floor(monthSeed()*themes.length);
+    document.getElementById('bgLayer').style.background=themes[monthThemeIdx].bg;
+}
+
+function openDayView(d){
+    selectedDay=d;
+    const data=getDayData(currentYear,currentMonth,d);
+    const dayOfWeek=new Date(currentYear,currentMonth-1,d).getDay();
+    document.getElementById('dayDay').textContent=d;
+    document.getElementById('dayMonth').textContent=monthNames[currentMonth-1];
+    document.getElementById('dayYear').textContent=currentYear;
+    document.getElementById('dayWeekday').textContent=weekdays[dayOfWeek];
+    const affEl=document.getElementById('dayAffirmation');
+    affEl.textContent=data.quote;
+    const bgPhoto=document.getElementById('dayBgPhoto');
+    bgPhoto.classList.remove('loaded');
+    bgPhoto.style.backgroundImage=`url('${data.photoUrl}')`;
+    preloadImage(data.photoUrl,(ok)=>{
+        if(ok){bgPhoto.classList.add('loaded')}
+        else{bgPhoto.style.backgroundImage=`url('${data.thumbUrl}')`;bgPhoto.classList.add('loaded')}
+    });
+    document.getElementById('dayBgOverlay').style.background='rgba(0,0,0,0.35)';
+    document.getElementById('dayView').style.display='flex';
+    setTimeout(()=>document.getElementById('dayView').classList.add('show'),10);
+}
+
+function closeDayView(){
+    document.getElementById('dayView').classList.remove('show');
+    setTimeout(()=>document.getElementById('dayView').style.display='none',400);
+}
+
+function prevDay(){
+    if(!selectedDay)return;
+    let d=selectedDay-1,m=currentMonth,y=currentYear;
+    if(d<1){m--;if(m<1){m=12;y--}d=new Date(y,m,0).getDate();currentYear=y;currentMonth=m}
+    openDayView(d);
+}
+function nextDay(){
+    if(!selectedDay)return;
+    let d=selectedDay+1,m=currentMonth,y=currentYear;
+    const maxD=new Date(y,m,0).getDate();
+    if(d>maxD){d=1;m++;if(m>12){m=1;y++}currentYear=y;currentMonth=m}
+    openDayView(d);
+}
+function prevMonth(){
+    currentMonth--;if(currentMonth<1){currentMonth=12;currentYear--}
+    currentYear=Math.max(YEAR_MIN,currentYear);renderCalendar();
+}
+function nextMonth(){
+    currentMonth++;if(currentMonth>12){currentMonth=1;currentYear++}
+    currentYear=Math.min(YEAR_MAX,currentYear);renderCalendar();
+}
+function changeYear(delta){
+    currentYear=Math.min(YEAR_MAX,Math.max(YEAR_MIN,currentYear+delta));renderCalendar();
+}
+function goToToday(){
+    const t=new Date();currentYear=t.getFullYear();currentMonth=t.getMonth()+1;
+    renderCalendar();openDayView(t.getDate());
+}
+function showYearPicker(){
+    document.getElementById('yearPicker').style.display='flex';
+    const grid=document.getElementById('yearGrid');grid.innerHTML='';
+    for(let y=YEAR_MIN;y<=YEAR_MAX;y++){
+        const btn=document.createElement('button');
+        btn.className='year-btn'+(y===currentYear?' active':'');
+        btn.textContent=y;
+        btn.onclick=()=>{currentYear=y;renderCalendar();closeYearPicker()};
+        grid.appendChild(btn);
+    }
+}
+function closeYearPicker(){document.getElementById('yearPicker').style.display='none'}
+
+window.addEventListener('load',()=>{
+    setTimeout(()=>{
+        document.getElementById('loader').style.opacity='0';
+        setTimeout(()=>{
+            document.getElementById('loader').style.display='none';
+            document.getElementById('mainView').style.display='block';
+            document.getElementById('mainView').style.animation='mainFadeIn 0.8s ease forwards';
+            renderCalendar();
+        },600);
+    },1200);
+});
+</script>
+</body>
+</html>
